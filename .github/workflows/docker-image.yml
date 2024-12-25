@@ -6,16 +6,18 @@ on:
   pull_request:
     branches: [ "master" ]
 
-env:
-  DATABASE_URL: file:db/local.db
-
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
+    
+    - name: Create .env file
+      run: |
+        echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
+    
     - name: Build the Docker image
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
       run: docker build . --file Dockerfile --tag habit-flow:$(date +%s)
