@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ "master" ]
 
+env:
+  DATABASE_URL: file:db/local.db
+
 jobs:
 
   build:
