@@ -26,4 +26,4 @@ jobs:
       run: docker build . --file Dockerfile --tag ${{ github.repository }}:latest
 
     - name: Push the Docker image
-      run: docker push ghcr.io/${{ github.actor }}/${{ github.repository }}:latest
+      run: docker push ghcr.io/${{ github.repository }}:latest
