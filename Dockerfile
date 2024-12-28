@@ -4,10 +4,9 @@ COPY package.json ./
 RUN bun install
 
 COPY . .
+# COPY db/local.db ./db/local.db
 RUN bun run db:push
 RUN bun run build
-
-RUN rm -rf src/ static/ emailTemplates/ docker-compose.yml
 
 FROM oven/bun
 
