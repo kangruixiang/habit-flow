@@ -1,3 +1,10 @@
-node_modules
-bun.lockb
+node_modules/**
+!node_modules/drizzle-kit
 build
+# .svelte-kit
+Dockerfile
+.dockerignore
+.git
+.gitignore
+.env
+*.log
