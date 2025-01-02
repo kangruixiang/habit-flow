@@ -75,9 +75,9 @@ export const actions = {
       })
     }
 
-    await writeFile(`static/${newName}`, Buffer.from(await dbFile.arrayBuffer()))
+    await writeFile(`db/${newName}`, Buffer.from(await dbFile.arrayBuffer()))
 
-    await uploadtoLocalDB(`file:static/${newName}`)
+    await uploadtoLocalDB(`file:db/${newName}`)
 
     return {
       success: true
