@@ -9,7 +9,6 @@ ENV DATABASE_URL=file:db/local.db
 
 COPY . .
 RUN mkdir -p db && touch db/local.db
-RUN bun run db:push
 RUN bun run build
 # Generate migration files
 RUN bun run drizzle-kit generate
