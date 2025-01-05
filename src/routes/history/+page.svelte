@@ -1,5 +1,5 @@
 <script lang="ts">
-	import dayjs from 'dayjs';
+	import dayjs, { Dayjs } from 'dayjs';
 	import relativeTime from 'dayjs/plugin/relativeTime';
 	import { RotateCw } from 'lucide-svelte';
 
@@ -11,11 +11,11 @@
 	import * as PopOver from '$lib/components/ui/popover';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/';
 
-	import type { BaseProp, History } from '$lib/types';
+	import type { Props } from '$lib/types';
 	import { goto } from '$app/navigation';
 	import { fly } from 'svelte/transition';
 
-	let { data, form }: BaseProp = $props();
+	let { data, form }: Props = $props();
 
 	let histories = $derived(data.histories);
 	let events = $derived(data.events);
@@ -24,7 +24,8 @@
 
 	let lastOccurence: string;
 	let averageOccurence: number;
-	let nextOccurence: string;
+	let nextRelativeDate: string;
+	let nextDate: Dayjs;
 	let deleteBoxOpen = $state(false);
 
 	function getLastOccurence() {
@@ -57,14 +58,25 @@
 		return averageOccurence;
 	}
 
-	function getNextOccurence() {
+	function getNextDate() {
+		nextDate = dayjs(histories[0].historyDate).add(averageOccurence, 'day');
+		return nextDate;
+	}
+
+	function getNextRelativeDate() {
 		if (histories.length == 0) {
 			return;
 		}
-		const nextDate = dayjs(histories[0].historyDate).add(averageOccurence, 'day');
-		nextOccurence = nextDate.fromNow();
-		return nextOccurence;
+		getNextDate();
+		nextRelativeDate = nextDate.fromNow();
+		return nextRelativeDate;
 	}
+
+	// function handleNewHistory(event) {
+	// 	const form = event.target
+	// 	getNextDate()
+	// 	form.querySelector('input[name="next_prediction_date"]').value = nextDate
+	// }
 </script>
 
 <div class="flex w-full flex-col gap-4">
@@ -86,6 +98,7 @@
 				class="group flex w-full cursor-pointer justify-center rounded-lg border p-8 transition-colors hover:bg-accent"
 			>
 				<input type="hidden" name="event_id" bind:value={events[0].id} />
+				<input type="hidden" name="next_prediction_date" />
 				<RotateCw size={50} class="transition-transform group-hover:rotate-180" />
 			</button>
 		</form>
@@ -95,7 +108,7 @@
 		<Card.Content>
 			<div class="order-last grid w-full grid-cols-2 justify-between sm:order-first">
 				<div>Next prediction</div>
-				<div class="text-right">{getNextOccurence() ? getNextOccurence() : '-'}</div>
+				<div class="text-right">{getNextRelativeDate() ? getNextRelativeDate() : '-'}</div>
 				<div>Last occurence</div>
 				<div class="text-right">{getLastOccurence() ? getLastOccurence() : '-'}</div>
 				<div>Average last 10</div>
@@ -148,7 +161,7 @@
 	<Card.Root>
 		<AlertDialog.Root>
 			<AlertDialog.Trigger class="w-full">
-				<Button class="w-full" variant="destructive">Delete Event</Button>
+				<Button class="w-full">Delete Event</Button>
 			</AlertDialog.Trigger>
 			<AlertDialog.Content>
 				<AlertDialog.Header>

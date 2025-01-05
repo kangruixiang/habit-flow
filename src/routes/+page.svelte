@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { setContext } from 'svelte';
 
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { Button } from '$lib/components/ui/button/';
@@ -8,9 +7,9 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 
 	import { Plus } from 'lucide-svelte';
-	import type { BaseProp } from '$lib/types';
+	import type { Props } from '$lib/types';
 
-	let { data }: BaseProp = $props();
+	let { data }: Props = $props();
 	let events = $derived(data.events);
 	let newEventDialogisOpen = $state(false);
 
@@ -25,6 +24,9 @@
 					<Card.Title>
 						{event.eventName}
 					</Card.Title>
+					<Card.Description>
+						{event.eventPredictionDate}
+					</Card.Description>
 				</Card.Header>
 				<Card.Content class="flex justify-between">
 					<div>{event.eventPredictionDate}</div>

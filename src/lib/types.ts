@@ -9,7 +9,7 @@ export type History = {
   eventID: number;
   historyDate: string;
 };
-export type BaseProp = {
+export type Props = {
   data: {
     events: Event[];
     histories: History[];
