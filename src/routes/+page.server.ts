@@ -13,19 +13,16 @@ export async function load() {
 }
 
 export const actions = {
-  newHistory: async ({ request }) => {
+
+  newEvent: async ({ request }) => {
     const data = await request.formData()
-    const eventID = Number(data.get('event_id'))
-    const date = new Date().toLocaleDateString()
+    const eventName = data.get('event_name') as string
 
-    await db.insert(schema.history).values({
-      eventID,
-      historyDate: date
+    await db.insert(schema.events).values({
+      eventName: eventName,
+    }).returning({
+      id: schema.events.id
     })
-
-    await db.update(schema.events).set({
-      eventLastDate: date
-    }).where(eq(schema.events.id, eventID))
 
     return { success: true }
   }
