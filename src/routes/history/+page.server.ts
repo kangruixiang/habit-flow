@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 import { db } from "$lib/server/db"
 import * as schema from "$lib/server/db/schema"
@@ -7,7 +7,7 @@ export async function load({ url }) {
   const eventID = Number(url.searchParams.get('event_id'))
 
   const events = await db.select().from(schema.events).where(eq(schema.events.id, eventID)).limit(1)
-  const histories = await db.select().from(schema.history).where(eq(schema.history.eventID, eventID))
+  const histories = await db.select().from(schema.history).where(eq(schema.history.eventID, eventID)).limit(10).orderBy(desc(schema.history.historyDate))
 
   return {
     events,

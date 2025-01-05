@@ -12,30 +12,19 @@
 	// let history = data.data.history;
 </script>
 
-{#each events as event}
-	<Card.Root class="transition-all hover:bg-accent/20">
-		<a href="/history?event_id={event.id}">
-			<Card.Header>
-				<Card.Title>
-					{event.eventName}
-				</Card.Title>
-			</Card.Header>
-			<Card.Content class="flex justify-between">
-				<div>{event.eventLastDate}</div>
-				<form method="POST" action="?/newHistory" use:enhance>
-					<input type="hidden" name="event_id" value={event.id} />
-					<Button
-						variant="outline"
-						size="lg"
-						type="submit"
-						onclick={(e) => {
-							e.stopPropagation();
-						}}
-					>
-						<IcSharpRefresh style="font-size:2em" />
-					</Button>
-				</form>
-			</Card.Content>
-		</a>
-	</Card.Root>
-{/each}
+<div class="grid grid-cols-2 gap-4 md:grid-cols-3">
+	{#each events as event}
+		<Card.Root class="transition-all hover:bg-accent/20">
+			<a href="/history?event_id={event.id}">
+				<Card.Header>
+					<Card.Title>
+						{event.eventName}
+					</Card.Title>
+				</Card.Header>
+				<Card.Content class="flex justify-between">
+					<div>{event.eventLastDate}</div>
+				</Card.Content>
+			</a>
+		</Card.Root>
+	{/each}
+</div>

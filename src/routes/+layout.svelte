@@ -5,4 +5,4 @@
 </script>
 
 <ModeWatcher />
-<div class="mx-auto my-20 max-w-3xl">{@render children()}</div>
+<div class="mx-auto my-20 max-w-3xl px-4">{@render children()}</div>
