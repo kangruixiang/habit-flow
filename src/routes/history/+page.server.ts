@@ -3,6 +3,7 @@ import { desc, eq } from "drizzle-orm";
 
 import { db } from "$lib/server/db"
 import * as schema from "$lib/server/db/schema"
+import { fail } from '@sveltejs/kit';
 
 export async function load({ url }) {
   const eventID = Number(url.searchParams.get('event_id'))
@@ -20,15 +21,21 @@ export const actions = {
   newHistory: async ({ request }) => {
     const data = await request.formData()
     const eventID = Number(data.get('event_id'))
-    const date = new Date().toISOString()
+    const nextPredictionDate = data.get('next_prediction_date') as string
+    const date = dayjs(new Date()).format("YYYY-MM-DD")
 
-    await db.insert(schema.history).values({
-      eventID,
-      historyDate: date
-    })
+    try {
+      await db.insert(schema.history).values({
+        eventID,
+        historyDate: date
+      })
+    } catch (e) {
+      console.log("Error: ", e)
+      return fail(400, { duplicate: true })
+    }
 
     await db.update(schema.events).set({
-      eventLastDate: date
+      eventPredictionDate: nextPredictionDate
     }).where(eq(schema.events.id, eventID))
 
     return { success: true }
@@ -39,7 +46,18 @@ export const actions = {
     console.log('deleting: ', historyID)
 
     await db.delete(schema.history).where(eq(schema.history.id, historyID))
+  },
+  deleteEvent: async ({ request }) => {
+    const data = await request.formData()
+    const eventID = Number(data.get('event_id'))
 
+    // delete all histories
+    console.log('delete all histories for eventID: ', eventID)
+    await db.delete(schema.history).where(eq(schema.history.eventID, eventID))
+
+    // delete event
+    console.log('deleting event: ', eventID)
+    await db.delete(schema.events).where(eq(schema.events.id, eventID))
   }
 }
 

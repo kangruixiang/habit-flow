@@ -9,10 +9,12 @@
 	import Separator from '@/components/ui/separator/separator.svelte';
 	import { ScrollArea } from '$lib/components/ui/scroll-area/';
 	import * as PopOver from '$lib/components/ui/popover';
+	import * as AlertDialog from '$lib/components/ui/alert-dialog/';
 
 	import type { BaseProp, History } from '$lib/types';
+	import { goto } from '$app/navigation';
 
-	let { data }: BaseProp = $props();
+	let { data, form }: BaseProp = $props();
 
 	let histories = $derived(data.histories);
 	let events = $derived(data.events);
@@ -27,6 +29,10 @@
 	function getLastOccurence() {
 		if (histories.length == 0) {
 			return;
+		}
+		if (histories[0].historyDate == dayjs(new Date()).format('YYYY-MM-DD')) {
+			lastOccurence = 'today.';
+			return lastOccurence;
 		}
 		lastOccurence = dayjs().to(histories[0].historyDate);
 		return lastOccurence;
@@ -60,31 +66,29 @@
 	}
 </script>
 
-<!-- {#if histories.length > 0} -->
 <Card.Root>
 	<Card.Header class="mb-8">
 		<Card.Title>{events[0].eventName}</Card.Title>
 	</Card.Header>
-	<Separator />
-	<Card.Content class="flex items-center justify-between">
-		<div>
-			<ul>
-				<li>
-					Next prediction: {getNextOccurence() ? getNextOccurence() : '-'}.
-				</li>
-				<li>
-					Last occurence: {getLastOccurence() ? getLastOccurence() : '-'}.
-				</li>
-
-				<li>
-					Average last 10 occurences: every {getAverageOccurence() ? getAverageOccurence() : '-'} days.
-				</li>
-			</ul>
+	{#if form?.duplicate}
+		<Card.Content>
+			<p class="text-center text-red-700">You've already done this today.</p>
+		</Card.Content>
+	{/if}
+	<Card.Content class="flex flex-col items-center justify-between gap-y-4 sm:flex-row">
+		<div class="order-last grid w-full grid-cols-2 sm:order-first">
+			<div>Next prediction:</div>
+			<div>{getNextOccurence() ? getNextOccurence() : '-'}.</div>
+			<div>Last occurence:</div>
+			<div>{getLastOccurence() ? getLastOccurence() : '-'}</div>
+			<div>Average last 10:</div>
+			<div>every {getAverageOccurence() ? getAverageOccurence() : '-'} days.</div>
 		</div>
-		<form method="POST" action="?/newHistory" use:enhance>
+
+		<form method="POST" class="w-full" action="?/newHistory" use:enhance>
 			<button
 				type="submit"
-				class="group cursor-pointer rounded-lg border p-8 transition-colors hover:bg-accent"
+				class="group flex w-full cursor-pointer justify-center rounded-lg border p-8 transition-colors hover:bg-accent"
 			>
 				<input type="hidden" name="event_id" bind:value={events[0].id} />
 				<RotateCw size={50} class="transition-transform group-hover:rotate-180" />
@@ -129,13 +133,28 @@
 		</ScrollArea>
 	</Card.Content>
 	<Card.Footer class="flex justify-end">
-		<Button variant="destructive">Delete Event</Button>
+		<AlertDialog.Root>
+			<AlertDialog.Trigger>
+				<Button variant="outline">Delete Event</Button>
+			</AlertDialog.Trigger>
+			<AlertDialog.Content>
+				<AlertDialog.Header>
+					<AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
+					<AlertDialog.Description>
+						This action cannot be undone. This will permanently delete this events and all of its
+						histories.
+					</AlertDialog.Description>
+				</AlertDialog.Header>
+				<AlertDialog.Footer>
+					<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+					<form method="POST" action="?/deleteEvent" use:enhance>
+						<AlertDialog.Action type="submit" onclick={() => goto('/')}>
+							<input type="hidden" name="event_id" bind:value={events[0].id} />
+							Delete
+						</AlertDialog.Action>
+					</form>
+				</AlertDialog.Footer>
+			</AlertDialog.Content>
+		</AlertDialog.Root>
 	</Card.Footer>
 </Card.Root>
-<!-- {:else}
-	<Card.Root>
-		<Card.Footer class="flex justify-end">
-			<Button variant="destructive">Delete Event</Button>
-		</Card.Footer>
-	</Card.Root>
-{/if} -->

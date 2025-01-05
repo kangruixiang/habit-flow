@@ -5,10 +5,10 @@ import * as schema from "$lib/server/db/schema"
 
 export async function load() {
   const events = await db.select().from(schema.events)
-  const history = await db.select().from(schema.history)
+  const histories = await db.select().from(schema.history)
 
   return {
-    events, history
+    events, histories
   }
 }
 

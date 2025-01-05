@@ -2,6 +2,7 @@ type Event = {
   id: number;
   eventName: string;
   eventLastDate: string;
+  eventPredictionDate: string;
 };
 export type History = {
   id: number;
@@ -12,6 +13,9 @@ export type BaseProp = {
   data: {
     events: Event[];
     histories: History[];
-  };
+  },
+  form?: {
+    duplicate: boolean
+  }
 };
 

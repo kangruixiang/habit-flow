@@ -51,7 +51,7 @@ async function uploadtoLocalDB(DBLocation: string) {
     // reconstruct history
     const history = {
       eventID: newEventID[0].id,
-      historyDate: dayjs(uploadedHistory.historyDate).toISOString()
+      historyDate: dayjs(uploadedHistory.historyDate).format("YYYY-MM-DD")
     }
 
     uploadedHistoryWithEvent.push(history)

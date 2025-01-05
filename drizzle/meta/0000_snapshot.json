@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "4f361ecc-18e7-483c-b36a-fc3ce3cbcb36",
+  "id": "d0b83651-a829-4b5c-ae35-6c14e230a8a8",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "events": {
@@ -23,6 +23,13 @@
         },
         "event_last_date": {
           "name": "event_last_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "event_prediction_date": {
+          "name": "event_prediction_date",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
