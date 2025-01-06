@@ -1,9 +1,12 @@
 import dayjs from 'dayjs';
-import { desc, eq } from "drizzle-orm";
-
-import { db } from "$lib/server/db"
-import * as schema from "$lib/server/db/schema"
 import { fail } from '@sveltejs/kit';
+
+import { desc, eq } from "drizzle-orm";
+import { db } from "$lib/server/db"
+
+import * as schema from "$lib/server/db/schema"
+import { updateEventColumns } from '@/calculations';
+
 
 export async function load({ url }) {
   const eventID = Number(url.searchParams.get('event_id'))
@@ -21,7 +24,6 @@ export const actions = {
   newHistory: async ({ request }) => {
     const data = await request.formData()
     const eventID = Number(data.get('event_id'))
-    const nextPredictionDate = data.get('next_prediction_date') as string
     const date = dayjs(new Date()).format("YYYY-MM-DD")
 
     try {
@@ -34,18 +36,19 @@ export const actions = {
       return fail(400, { duplicate: true })
     }
 
-    await db.update(schema.events).set({
-      eventPredictionDate: nextPredictionDate
-    }).where(eq(schema.events.id, eventID))
+    await updateEventColumns(eventID)
 
     return { success: true }
   },
   deleteHistory: async ({ request }) => {
     const data = await request.formData()
     const historyID = Number(data.get('history_id'))
+    const eventID = Number(data.get('event_id'))
     console.log('deleting: ', historyID)
 
     await db.delete(schema.history).where(eq(schema.history.id, historyID))
+
+    await updateEventColumns(eventID)
   },
   deleteEvent: async ({ request }) => {
     const data = await request.formData()

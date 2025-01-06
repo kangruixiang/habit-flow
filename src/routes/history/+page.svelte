@@ -1,5 +1,5 @@
 <script lang="ts">
-	import dayjs, { Dayjs } from 'dayjs';
+	import dayjs from 'dayjs';
 	import relativeTime from 'dayjs/plugin/relativeTime';
 	import { RotateCw } from 'lucide-svelte';
 
@@ -13,76 +13,22 @@
 
 	import type { Props } from '$lib/types';
 	import { goto } from '$app/navigation';
-	import { fly } from 'svelte/transition';
+	import { fade, fly } from 'svelte/transition';
 
 	let { data, form }: Props = $props();
 
 	let histories = $derived(data.histories);
-	let events = $derived(data.events);
+	let event = $derived(data.events[0]);
 
 	dayjs.extend(relativeTime);
 
-	let lastOccurence: string;
-	let averageOccurence: number;
-	let nextRelativeDate: string;
-	let nextDate: Dayjs;
 	let deleteBoxOpen = $state(false);
-
-	function getLastOccurence() {
-		if (histories.length == 0) {
-			return;
-		}
-		if (histories[0].historyDate == dayjs(new Date()).format('YYYY-MM-DD')) {
-			lastOccurence = 'today.';
-			return lastOccurence;
-		}
-		lastOccurence = dayjs().to(histories[0].historyDate);
-		return lastOccurence;
-	}
-
-	function getAverageOccurence() {
-		if (histories.length == 0) {
-			return;
-		}
-		const differences: number[] = [];
-		for (let i = 1; i < histories.length; i++) {
-			const day1 = dayjs(histories[i].historyDate);
-			const day2 = dayjs(histories[i - 1].historyDate);
-			const diff = Math.abs(day1.diff(day2, 'days'));
-			differences.push(diff);
-		}
-
-		const totalDiff = differences.reduce((sum, diff) => sum + diff, 0);
-		const averageDiff = Math.round(totalDiff / differences.length);
-		averageOccurence = averageDiff;
-		return averageOccurence;
-	}
-
-	function getNextDate() {
-		nextDate = dayjs(histories[0].historyDate).add(averageOccurence, 'day');
-		return nextDate;
-	}
-
-	function getNextRelativeDate() {
-		if (histories.length == 0) {
-			return;
-		}
-		getNextDate();
-		nextRelativeDate = nextDate.fromNow();
-		return nextRelativeDate;
-	}
-
-	// function handleNewHistory(event) {
-	// 	const form = event.target
-	// 	getNextDate()
-	// 	form.querySelector('input[name="next_prediction_date"]').value = nextDate
-	// }
 </script>
 
-<div class="flex w-full flex-col gap-4">
+<div in:fly={{ y: 30, duration: 300 }} class="flex w-full flex-col gap-4">
 	<Card.Root>
 		<Card.Header class="mb-12 mt-4 text-center">
-			<Card.Title>{events[0].eventName}</Card.Title>
+			<Card.Title>{event.eventName}</Card.Title>
 		</Card.Header>
 	</Card.Root>
 
@@ -97,8 +43,7 @@
 				type="submit"
 				class="group flex w-full cursor-pointer justify-center rounded-lg border p-8 transition-colors hover:bg-accent"
 			>
-				<input type="hidden" name="event_id" bind:value={events[0].id} />
-				<input type="hidden" name="next_prediction_date" />
+				<input type="hidden" name="event_id" bind:value={event.id} />
 				<RotateCw size={50} class="transition-transform group-hover:rotate-180" />
 			</button>
 		</form>
@@ -108,12 +53,12 @@
 		<Card.Content>
 			<div class="order-last grid w-full grid-cols-2 justify-between sm:order-first">
 				<div>Next prediction</div>
-				<div class="text-right">{getNextRelativeDate() ? getNextRelativeDate() : '-'}</div>
+				<div class="text-right">{event.eventPredictionRelativeDate}</div>
 				<div>Last occurence</div>
-				<div class="text-right">{getLastOccurence() ? getLastOccurence() : '-'}</div>
+				<div class="text-right">{event.eventLastRelativeDate}</div>
 				<div>Average last 10</div>
 				<div class="text-right">
-					every {getAverageOccurence() ? getAverageOccurence() : '-'} days
+					every {event.averageOccurence} days
 				</div>
 			</div>
 		</Card.Content>
@@ -143,6 +88,7 @@
 										use:enhance
 									>
 										<input type="hidden" name="history_id" bind:value={history.id} />
+										<input type="hidden" name="event_id" bind:value={event.id} />
 										Are you sure?<Button
 											variant="destructive"
 											type="submit"
@@ -175,7 +121,7 @@
 					<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
 					<form method="POST" action="?/deleteEvent" use:enhance>
 						<AlertDialog.Action type="submit" onclick={() => goto('/')}>
-							<input type="hidden" name="event_id" bind:value={events[0].id} />
+							<input type="hidden" name="event_id" bind:value={event.id} />
 							Delete
 						</AlertDialog.Action>
 					</form>

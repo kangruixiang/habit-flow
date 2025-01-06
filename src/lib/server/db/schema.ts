@@ -5,7 +5,10 @@ export const events = sqliteTable('events', {
 	id: int('id').primaryKey({ autoIncrement: true }),
 	eventName: text('event_name').notNull().unique(),
 	eventLastDate: text('event_last_date'),
-	eventPredictionDate: text('event_prediction_date')
+	eventLastRelativeDate: text('event_late_relative'),
+	eventPredictionDate: text('event_prediction_date'),
+	eventPredictionRelativeDate: text('event_prediction_relative'),
+	eventAverageOccurence: int('event_average_occurence'),
 });
 
 // export const eventsRelations = relations(events, ({ many }) => ({

@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "d0b83651-a829-4b5c-ae35-6c14e230a8a8",
+  "id": "31395488-4952-4a06-b265-daabcde48c22",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "events": {
@@ -28,9 +28,30 @@
           "notNull": false,
           "autoincrement": false
         },
+        "event_late_relative": {
+          "name": "event_late_relative",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "event_prediction_date": {
           "name": "event_prediction_date",
           "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "event_prediction_relative": {
+          "name": "event_prediction_relative",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "event_average_occurence": {
+          "name": "event_average_occurence",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false

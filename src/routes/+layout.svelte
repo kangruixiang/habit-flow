@@ -15,5 +15,5 @@
 			{@render children()}
 		</div>
 	</main>
-	<img src="frog.png" alt="" class="fixed bottom-0 right-0 -z-10" />
+	<img src="frog.png" alt="" class="fixed bottom-0 right-0 -z-10 w-1/2 sm:w-1/4" />
 </Sidebar.Provider>

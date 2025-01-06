@@ -2,7 +2,10 @@ type Event = {
   id: number;
   eventName: string;
   eventLastDate: string;
+  eventLastRelativeDate: string;
   eventPredictionDate: string;
+  eventPredictionRelativeDate: string;
+  averageOccurence: number;
 };
 export type History = {
   id: number;

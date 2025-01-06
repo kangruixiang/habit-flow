@@ -2,12 +2,13 @@ import { writeFile } from 'fs/promises'
 import { fail } from '@sveltejs/kit'
 import dayjs from 'dayjs';
 
-import { eq } from "drizzle-orm"
+import { desc, eq } from "drizzle-orm"
 import { drizzle } from 'drizzle-orm/libsql';
 
 import { db } from '$lib/server/db';
 import * as schema from "$lib/server/db/schema"
 import * as importSchema from "$lib/server/db/importSchema"
+import { EventDate, updateEventColumns } from '@/calculations';
 
 async function uploadtoLocalDB(DBLocation: string) {
   // connect to db
@@ -33,20 +34,22 @@ async function uploadtoLocalDB(DBLocation: string) {
   console.log('Fetching uploaded history')
   const uploadedHistories = await uploadedDB.query.uploadedHistoryTable.findMany()
 
-  // add uploaded history to local history
   type History = {
     eventID: number,
     historyDate: string
   }
 
+  // add uploaded history to local history
   const uploadedHistoryWithEvent: History[] = []
+  const newEventIDList = [] as { id: number }[]
   for (const uploadedHistory of uploadedHistories) {
 
-    // get event name from uploaded dtabase
+    // get event name from uploaded database
     const eventName = await uploadedDB.select().from(eventsTable).where(eq(eventsTable.id, uploadedHistory.historyEventID))
 
     // get new event id from local database
     const newEventID = await db.select({ id: schema.events.id }).from(schema.events).where(eq(schema.events.eventName, eventName[0].eventName))
+    newEventIDList.push(newEventID[0])
 
     // reconstruct history
     const history = {
@@ -59,6 +62,13 @@ async function uploadtoLocalDB(DBLocation: string) {
 
   console.log('Inserting into database')
   await db.insert(schema.history).values(uploadedHistoryWithEvent).onConflictDoNothing()
+
+  // updating other columns for events
+  console.log('Updating event columns')
+  for (const event of newEventIDList) {
+    // get all the related histories chronologically from database again
+    updateEventColumns(event.id)
+  }
 }
 
 

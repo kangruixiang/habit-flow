@@ -8,15 +8,14 @@
 
 	import { Plus } from 'lucide-svelte';
 	import type { Props } from '$lib/types';
+	import { fade } from 'svelte/transition';
 
 	let { data }: Props = $props();
 	let events = $derived(data.events);
 	let newEventDialogisOpen = $state(false);
-
-	// let history = data.data.history;
 </script>
 
-<div class="grid-cols grid gap-4 md:grid-cols-3">
+<div in:fade={{ duration: 200 }} class="grid-cols grid gap-2 sm:gap-4 md:grid-cols-3">
 	{#each events as event}
 		<Card.Root class="transition-all hover:bg-accent">
 			<a href="/history?event_id={event.id}">
@@ -24,34 +23,31 @@
 					<Card.Title>
 						{event.eventName}
 					</Card.Title>
-					<Card.Description>
-						{event.eventPredictionDate}
-					</Card.Description>
 				</Card.Header>
 				<Card.Content class="flex justify-between">
-					<div>{event.eventPredictionDate}</div>
+					<div>{event.eventLastRelativeDate}</div>
 				</Card.Content>
 			</a>
 		</Card.Root>
 	{/each}
-	<Card.Root class="backdrop-blur-md transition-all hover:bg-accent/80"
-		><Card.Content class="flex cursor-pointer items-center justify-center">
-			<Dialog.Root bind:open={newEventDialogisOpen}>
-				<Dialog.Trigger><Plus size={64} /></Dialog.Trigger>
-				<Dialog.Content>
-					<Dialog.Header>
-						<Dialog.Title>Enter Event Name</Dialog.Title>
-						<Dialog.Description></Dialog.Description>
-					</Dialog.Header>
-					<form method="POST" action="?/newEvent" class="mt-4 flex gap-x-4" use:enhance>
-						<Input name="event_name" required></Input>
+	<Card.Root class="flex justify-center backdrop-blur-md transition-all hover:bg-accent/80">
+		<Dialog.Root bind:open={newEventDialogisOpen}>
+			<Dialog.Trigger class="w-full">
+				<Card.Content class="flex grow cursor-pointer items-center justify-center">
+					<Plus size={64} />
+				</Card.Content>
+			</Dialog.Trigger>
+			<Dialog.Content>
+				<Dialog.Header>
+					<Dialog.Title>Enter Event Name</Dialog.Title>
+					<Dialog.Description></Dialog.Description>
+				</Dialog.Header>
+				<form method="POST" action="?/newEvent" class="mt-4 flex gap-x-4" use:enhance>
+					<Input name="event_name" required></Input>
 
-						<Button type="submit" onclick={() => (newEventDialogisOpen = false)}
-							>Save Changes</Button
-						>
-					</form>
-				</Dialog.Content>
-			</Dialog.Root>
-		</Card.Content>
+					<Button type="submit" onclick={() => (newEventDialogisOpen = false)}>Save Changes</Button>
+				</form>
+			</Dialog.Content>
+		</Dialog.Root>
 	</Card.Root>
 </div>
