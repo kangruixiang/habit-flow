@@ -1,7 +1,7 @@
 <script lang="ts">
 	import dayjs from 'dayjs';
 	import relativeTime from 'dayjs/plugin/relativeTime';
-	import { RotateCw } from 'lucide-svelte';
+	import { RotateCw, CircleAlert, CircleCheckBig } from 'lucide-svelte';
 
 	import { enhance } from '$app/forms';
 	import * as Card from '$lib/components/ui/card/index.js';
@@ -41,10 +41,19 @@
 		<form method="POST" class="w-full" action="?/newHistory" use:enhance>
 			<button
 				type="submit"
-				class="group flex w-full cursor-pointer justify-center rounded-lg border p-8 transition-colors hover:bg-accent"
+				disabled={dayjs(event.eventLastDate).isSame(dayjs(), 'day')}
+				class="group flex w-full justify-center rounded-lg border p-8 transition-colors hover:bg-accent"
 			>
 				<input type="hidden" name="event_id" bind:value={event.id} />
-				<RotateCw size={50} class="transition-transform  group-hover:rotate-180" />
+				{#if dayjs(event.eventLastDate).isSame(dayjs(), 'day')}
+					<CircleCheckBig size={50} color={'green'} />
+				{:else if event.eventPredictionDate == ''}
+					<RotateCw size={50} class="transition-transform  group-hover:rotate-180" />
+				{:else if dayjs(event.eventPredictionDate).isBefore(dayjs())}
+					<CircleAlert size={50} color={'orange'} />
+				{:else}
+					<RotateCw size={50} class="transition-transform  group-hover:rotate-180" />
+				{/if}
 			</button>
 		</form>
 	</Card.Root>
@@ -58,7 +67,7 @@
 				<div class="text-right">{event.eventLastRelativeDate}</div>
 				<div>Average last 10</div>
 				<div class="text-right">
-					every {event.averageOccurence} days
+					every {event.eventAverageOccurence} days
 				</div>
 			</div>
 		</Card.Content>
@@ -67,8 +76,8 @@
 	<Card.Root>
 		<Card.Content>
 			<h2 class="mb-2 pb-2">Most recent 10 occurences:</h2>
-			<ScrollArea class="h-56">
-				<div class="relative flex flex-col gap-y-2 px-2">
+			<ScrollArea class="h-56 rounded-lg bg-accent/30 p-4">
+				<div class="relative flex flex-col gap-y-2">
 					{#each histories as history (history.id)}
 						<div in:fly={{ y: -20, duration: 200 }} class="flex items-center justify-between">
 							<div>
@@ -122,7 +131,11 @@
 				<AlertDialog.Footer>
 					<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
 					<form method="POST" action="?/deleteEvent" use:enhance>
-						<AlertDialog.Action type="submit" onclick={() => goto('/')}>
+						<AlertDialog.Action
+							class="w-full bg-destructive"
+							type="submit"
+							onclick={() => goto('/')}
+						>
 							<input type="hidden" name="event_id" bind:value={event.id} />
 							Delete
 						</AlertDialog.Action>

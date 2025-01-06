@@ -1,4 +1,5 @@
 <script lang="ts">
+	import dayjs from 'dayjs';
 	import { enhance } from '$app/forms';
 
 	import * as Card from '$lib/components/ui/card/index.js';
@@ -6,7 +7,7 @@
 	import { Input } from '@/components/ui/input';
 	import * as Dialog from '$lib/components/ui/dialog';
 
-	import { Plus } from 'lucide-svelte';
+	import { Plus, BadgeAlert, BadgeCheck } from 'lucide-svelte';
 	import type { Props } from '$lib/types';
 	import { fade } from 'svelte/transition';
 
@@ -15,7 +16,7 @@
 	let newEventDialogisOpen = $state(false);
 </script>
 
-<div in:fade={{ duration: 200 }} class="grid-cols grid gap-2 sm:gap-4 md:grid-cols-3">
+<div in:fade={{ duration: 200 }} class="grid-cols grid gap-2 sm:gap-4 md:grid-cols-2">
 	{#each events as event}
 		<Card.Root class="transition-all hover:bg-accent">
 			<a href="/history?event_id={event.id}">
@@ -26,6 +27,13 @@
 				</Card.Header>
 				<Card.Content class="flex justify-between">
 					<div>{event.eventLastRelativeDate}</div>
+					{#if event.eventPredictionDate == ''}
+						<br />
+					{:else if dayjs(event.eventPredictionDate).isBefore(dayjs())}
+						<BadgeAlert color={'orange'} />
+					{:else}
+						<BadgeCheck color={'green'} />
+					{/if}
 				</Card.Content>
 			</a>
 		</Card.Root>

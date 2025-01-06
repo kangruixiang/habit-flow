@@ -4,6 +4,7 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
 	import AppSidebar from '$lib/parts/Sidebar.svelte';
+	import { Separator } from '$lib/components/ui/separator/';
 	let { children } = $props();
 	// const items = [
 	// 	{
@@ -24,8 +25,9 @@
 	<AppSidebar />
 
 	<main class="w-full">
-		<div class="flex items-center">
+		<div class="bg-background/50">
 			<Sidebar.Trigger />
+			<Separator orientation="vertical" />
 			<!-- <Breadcrumb.Root>
 				<Breadcrumb.List>
 					<Breadcrumb.Item>
