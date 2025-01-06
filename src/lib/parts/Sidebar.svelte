@@ -19,20 +19,22 @@
 <Sidebar.Root>
 	<Sidebar.Header>Memoirs of a Frog</Sidebar.Header>
 	<Sidebar.Content>
-		<Sidebar.Menu>
-			{#each items as item (item.title)}
-				<Sidebar.MenuItem>
-					<Sidebar.MenuButton>
-						{#snippet child({ props })}
-							<a href={item.url} {...props}>
-								<item.icon></item.icon>
-								<span>{item.title}</span></a
-							>
-						{/snippet}
-					</Sidebar.MenuButton>
-				</Sidebar.MenuItem>
-			{/each}
-		</Sidebar.Menu>
+		<Sidebar.Group>
+			<Sidebar.Menu>
+				{#each items as item (item.title)}
+					<Sidebar.MenuItem>
+						<Sidebar.MenuButton>
+							{#snippet child({ props })}
+								<a href={item.url} {...props}>
+									<item.icon></item.icon>
+									<span>{item.title}</span></a
+								>
+							{/snippet}
+						</Sidebar.MenuButton>
+					</Sidebar.MenuItem>
+				{/each}
+			</Sidebar.Menu>
+		</Sidebar.Group>
 	</Sidebar.Content>
 	<Sidebar.Footer />
 </Sidebar.Root>

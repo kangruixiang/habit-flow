@@ -32,7 +32,7 @@
 		</Card.Header>
 	</Card.Root>
 
-	<Card.Root>
+	<Card.Root class="active:scale-[98%]">
 		{#if form?.duplicate}
 			<Card.Content>
 				<p class="text-center text-red-700">You've already done this today.</p>
@@ -44,7 +44,7 @@
 				class="group flex w-full cursor-pointer justify-center rounded-lg border p-8 transition-colors hover:bg-accent"
 			>
 				<input type="hidden" name="event_id" bind:value={event.id} />
-				<RotateCw size={50} class="transition-transform group-hover:rotate-180" />
+				<RotateCw size={50} class="transition-transform  group-hover:rotate-180" />
 			</button>
 		</form>
 	</Card.Root>
@@ -70,7 +70,7 @@
 			<ScrollArea class="h-56">
 				<div class="relative flex flex-col gap-y-2 px-2">
 					{#each histories as history (history.id)}
-						<div in:fly={{ y: -20, duration: 200 }} class="flex justify-between">
+						<div in:fly={{ y: -20, duration: 200 }} class="flex items-center justify-between">
 							<div>
 								<p>{dayjs(history.historyDate).format('MM-DD-YYYY')}</p>
 							</div>
@@ -89,7 +89,9 @@
 									>
 										<input type="hidden" name="history_id" bind:value={history.id} />
 										<input type="hidden" name="event_id" bind:value={event.id} />
-										Are you sure?<Button
+										Are you sure?
+
+										<Button
 											variant="destructive"
 											type="submit"
 											onclick={() => (deleteBoxOpen = false)}>Delete</Button
