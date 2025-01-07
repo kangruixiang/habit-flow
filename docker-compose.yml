@@ -1,0 +1,12 @@
+services:
+  memoirs-of-a-frog:
+    image: ghcr.io/kangruixiang/memoirs-of-a-frog:latest
+    container_name: memoirs-of-a-frog
+    environment:
+      - DATABASE_URL=file:db/local.db
+      - TZ=America/New_York #add your timezone
+    volumes:
+      - /username/docker/memoirs-of-a-frog/db:/app/db #add your host directory
+    ports:
+      - 4001:80
+    restart: always

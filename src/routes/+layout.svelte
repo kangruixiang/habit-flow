@@ -11,11 +11,11 @@
 </script>
 
 <ModeWatcher />
-<Sidebar.Provider>
+<Sidebar.Provider open={false}>
 	<AppSidebar />
 
-	<main class="w-full">
-		<div class="flex h-14 items-center border-b bg-background">
+	<main class="relative w-full">
+		<div class="sticky top-0 z-10 flex h-14 items-center border-b bg-background">
 			<Sidebar.Trigger size="lg" class="h-14" />
 
 			<Separator orientation="vertical" />

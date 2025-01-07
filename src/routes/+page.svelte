@@ -13,12 +13,37 @@
 	import Filterbar from '@/parts/Filterbar.svelte';
 
 	let { data }: Props = $props();
-	let events = $derived(data.events);
+	let events = $state(data.events);
+	let searchTerm = $state('');
+	let selectValue = $state<'Name' | 'Last Updated' | 'Due Date' | ''>('');
+
 	let newEventDialogisOpen = $state(false);
+
+	function newEvent() {
+		console.log('inside filter', data.events);
+		events = data.events;
+		newEventDialogisOpen = false;
+	}
+
+	$effect(() => {
+		if (selectValue == 'Name') {
+			events.sort((a, b) => a.eventName.localeCompare(b.eventName));
+		} else if (selectValue == 'Last Updated') {
+			events.sort((a, b) => dayjs(b.eventLastDate).diff(dayjs(a.eventLastDate)));
+		} else if (selectValue == 'Due Date') {
+			events.sort((a, b) => dayjs(a.eventPredictionDate).diff(dayjs(b.eventPredictionDate)));
+		}
+	});
+
+	$effect(() => {
+		events = data.events.filter((event) => {
+			return event.eventName.toLowerCase().includes(searchTerm.toLowerCase());
+		});
+	});
 </script>
 
 <div class="my-8">
-	<Filterbar />
+	<Filterbar bind:selectValue bind:searchTerm />
 </div>
 
 <div in:fade={{ duration: 200 }} class="grid-cols grid gap-2 sm:gap-4 md:grid-cols-2">
@@ -58,7 +83,7 @@
 				<form method="POST" action="?/newEvent" class="mt-4 flex gap-x-4" use:enhance>
 					<Input name="event_name" required></Input>
 
-					<Button type="submit" onclick={() => (newEventDialogisOpen = false)}>Save Changes</Button>
+					<Button type="submit" onclick={newEvent}>Save Changes</Button>
 				</form>
 			</Dialog.Content>
 		</Dialog.Root>

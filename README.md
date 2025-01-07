@@ -1,38 +1,33 @@
-# sv
+## About
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Memoirs of a Frog is an application I wrote to help record frequency of how often I do a task. It's not a todo list, but more for record keeping and statistics.
 
-## Creating a project
+## Screenshots
 
-If you're seeing this, you've probably already done this step. Congrats!
+![](static/frontpage.png)
 
-```bash
-# create a new project in the current directory
-npx sv create
+![](/static/event.png)
 
-# create a new project in my-app
-npx sv create my-app
+
+## Installation
+
+Docker is recommended. Example docker compose file:
+
+```yaml
+services:
+  memoirs-of-a-frog:
+    image: ghcr.io/kangruixiang/memoirs-of-a-frog:latest
+    container_name: memoirs-of-a-frog
+    environment:
+      - DATABASE_URL=file:db/local.db
+      - TZ=America/New_York #add your timezone
+    volumes:
+      - /username/docker/memoirs-of-a-frog/db:/app/db #add your host directory
+    ports:
+      - 4001:80
+    restart: always
 ```
 
-## Developing
+## Upload
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+You can upload database backed up from Periodically under Upload. 

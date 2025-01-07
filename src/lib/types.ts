@@ -1,4 +1,4 @@
-type Event = {
+export type Event = {
   id: number;
   eventName: string;
   eventLastDate: string;

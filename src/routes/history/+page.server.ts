@@ -61,6 +61,16 @@ export const actions = {
     // delete event
     console.log('deleting event: ', eventID)
     await db.delete(schema.events).where(eq(schema.events.id, eventID))
+  },
+  newEventName: async ({ request }) => {
+    const data = await request.formData()
+    const newEventName = data.get('new_event_name') as string
+    const eventID = Number(data.get('event_id'))
+
+    console.log('save new event name: ', newEventName)
+    await db.update(schema.events).set({
+      eventName: newEventName
+    }).where(eq(schema.events.id, eventID))
   }
 }
 

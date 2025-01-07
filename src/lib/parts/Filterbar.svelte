@@ -3,13 +3,18 @@
 	import { Input } from '$lib/components/ui/input/';
 	import { Search } from 'lucide-svelte';
 
-	let selectValue = $state('');
+	interface Props {
+		selectValue: string;
+		searchTerm: string;
+	}
+
+	let { selectValue = $bindable(), searchTerm = $bindable() }: Props = $props();
 </script>
 
-<div class="flex gap-x-4">
+<div class="flex flex-col gap-x-4 gap-y-2 sm:flex-row">
 	<div class="relative grow">
 		<Search class="absolute left-2 top-[50%] h-5 translate-y-[-50%] text-muted-foreground" />
-		<Input placeholder="Search" class="pl-10"></Input>
+		<Input bind:value={searchTerm} placeholder="Search" class="pl-10" />
 	</div>
 
 	<div class="flex items-center gap-x-2 text-nowrap">

@@ -19,6 +19,7 @@
 
 	let histories = $derived(data.histories);
 	let event = $derived(data.events[0]);
+	let newEventName = $state(event.eventName);
 
 	dayjs.extend(relativeTime);
 
@@ -28,8 +29,29 @@
 <div in:fly={{ y: 30, duration: 300 }} class="flex w-full flex-col gap-4">
 	<Card.Root>
 		<Card.Header class="mb-12 mt-4 text-center">
-			<Card.Title>{event.eventName}</Card.Title>
+			<Card.Title>
+				<input
+					type="text"
+					class=" h-10 w-full rounded-md text-center ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+					bind:value={newEventName}
+				/>
+			</Card.Title>
 		</Card.Header>
+		{#if event.eventName != newEventName}
+			<Card.Content class="flex justify-end gap-x-2">
+				<form
+					method="POST"
+					in:fly={{ duration: 200, y: -10, opacity: 90 }}
+					action="?/newEventName"
+					use:enhance
+				>
+					<Button variant="outline" onclick={() => (newEventName = event.eventName)}>Cancel</Button>
+					<input type="hidden" name="new_event_name" bind:value={newEventName} />
+					<input type="hidden" name="event_id" bind:value={event.id} />
+					<Button type="submit">Save</Button>
+				</form>
+			</Card.Content>
+		{/if}
 	</Card.Root>
 
 	<form method="POST" class="w-full" action="?/newHistory" use:enhance>
