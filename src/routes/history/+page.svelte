@@ -32,37 +32,32 @@
 		</Card.Header>
 	</Card.Root>
 
-	<Card.Root class="active:scale-[98%]">
-		{#if form?.duplicate}
-			<Card.Content>
-				<p class="text-center text-red-700">You've already done this today.</p>
-			</Card.Content>
-		{/if}
-		<form method="POST" class="w-full" action="?/newHistory" use:enhance>
-			<button
-				type="submit"
-				disabled={dayjs(event.eventLastDate).isSame(dayjs(), 'day')}
-				class="group flex w-full justify-center rounded-lg border p-8 transition-colors hover:bg-accent"
-			>
-				<input type="hidden" name="event_id" bind:value={event.id} />
-				{#if dayjs(event.eventLastDate).isSame(dayjs(), 'day')}
-					<CircleCheckBig size={50} color={'green'} />
-				{:else if event.eventPredictionDate == ''}
-					<RotateCw size={50} class="transition-transform  group-hover:rotate-180" />
-				{:else if dayjs(event.eventPredictionDate).isBefore(dayjs())}
-					<CircleAlert size={50} color={'orange'} />
-				{:else}
-					<RotateCw size={50} class="transition-transform  group-hover:rotate-180" />
-				{/if}
-			</button>
-		</form>
-	</Card.Root>
+	<form method="POST" class="w-full" action="?/newHistory" use:enhance>
+		<button
+			type="submit"
+			disabled={dayjs(event.eventLastDate).isSame(dayjs(), 'day')}
+			class="flex w-full justify-center rounded-lg border p-8 transition-colors hover:bg-accent active:scale-[98%] disabled:hover:bg-background disabled:active:scale-[100%]"
+		>
+			<input type="hidden" name="event_id" bind:value={event.id} />
+			{#if dayjs(event.eventLastDate).isSame(dayjs(), 'day')}
+				<CircleCheckBig size={50} color={'green'} />
+			{:else if event.eventPredictionDate == ''}
+				<RotateCw size={50} class="transition-transform  group-hover:rotate-180" />
+			{:else if dayjs(event.eventPredictionDate).isBefore(dayjs())}
+				<CircleAlert size={50} color={'orange'} />
+			{:else}
+				<RotateCw size={50} class="transition-transform  group-hover:rotate-180" />
+			{/if}
+		</button>
+	</form>
 
 	<Card.Root>
 		<Card.Content>
 			<div class="order-last grid w-full grid-cols-2 justify-between sm:order-first">
 				<div>Next prediction</div>
+
 				<div class="text-right">{event.eventPredictionRelativeDate}</div>
+
 				<div>Last occurence</div>
 				<div class="text-right">{event.eventLastRelativeDate}</div>
 				<div>Average last 10</div>
@@ -132,7 +127,7 @@
 					<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
 					<form method="POST" action="?/deleteEvent" use:enhance>
 						<AlertDialog.Action
-							class="w-full bg-destructive"
+							class="w-full bg-destructive text-destructive-foreground hover:bg-destructive/80"
 							type="submit"
 							onclick={() => goto('/')}
 						>

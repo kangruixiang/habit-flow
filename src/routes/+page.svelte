@@ -10,11 +10,16 @@
 	import { Plus, BadgeAlert, BadgeCheck } from 'lucide-svelte';
 	import type { Props } from '$lib/types';
 	import { fade } from 'svelte/transition';
+	import Filterbar from '@/parts/Filterbar.svelte';
 
 	let { data }: Props = $props();
 	let events = $derived(data.events);
 	let newEventDialogisOpen = $state(false);
 </script>
+
+<div class="my-8">
+	<Filterbar />
+</div>
 
 <div in:fade={{ duration: 200 }} class="grid-cols grid gap-2 sm:gap-4 md:grid-cols-2">
 	{#each events as event}

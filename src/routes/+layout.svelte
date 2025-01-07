@@ -2,22 +2,12 @@
 	import { ModeWatcher } from 'mode-watcher';
 	import '../app.css';
 	import * as Sidebar from '$lib/components/ui/sidebar';
-	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
 	import AppSidebar from '$lib/parts/Sidebar.svelte';
 	import { Separator } from '$lib/components/ui/separator/';
+	import { Button } from '$lib/components/ui/button/';
+	import { Home } from 'lucide-svelte';
+
 	let { children } = $props();
-	// const items = [
-	// 	{
-	// 		title: 'Home',
-	// 		url: '/',
-	// 		icon: House
-	// 	},
-	// 	{
-	// 		title: 'Upload',
-	// 		url: '/upload',
-	// 		icon: Upload
-	// 	}
-	// ];
 </script>
 
 <ModeWatcher />
@@ -25,16 +15,16 @@
 	<AppSidebar />
 
 	<main class="w-full">
-		<div class="bg-background/50">
-			<Sidebar.Trigger />
+		<div class="flex h-14 items-center border-b bg-background">
+			<Sidebar.Trigger size="lg" class="h-14" />
+
 			<Separator orientation="vertical" />
-			<!-- <Breadcrumb.Root>
-				<Breadcrumb.List>
-					<Breadcrumb.Item>
-						<Breadcrumb.Link href="/">Home</Breadcrumb.Link>
-					</Breadcrumb.Item>
-				</Breadcrumb.List>
-			</Breadcrumb.Root> -->
+			<a href="/">
+				<Button class="h-14 w-14" variant="ghost" size="icon">
+					<Home />
+				</Button></a
+			>
+			<Separator orientation="vertical" />
 		</div>
 		<div class="mx-auto mb-20 mt-10 max-w-3xl px-4">
 			{@render children()}

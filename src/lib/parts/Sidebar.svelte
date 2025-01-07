@@ -17,16 +17,16 @@
 </script>
 
 <Sidebar.Root>
-	<Sidebar.Header>Memoirs of a Frog</Sidebar.Header>
+	<Sidebar.Header class="px-4 py-4 text-lg">Memoirs of a Frog</Sidebar.Header>
 	<Sidebar.Content>
 		<Sidebar.Group>
 			<Sidebar.Menu>
 				{#each items as item (item.title)}
 					<Sidebar.MenuItem>
-						<Sidebar.MenuButton>
+						<Sidebar.MenuButton class="flex items-center gap-x-4 px-4 py-6 text-base">
 							{#snippet child({ props })}
 								<a href={item.url} {...props}>
-									<item.icon></item.icon>
+									<item.icon />
 									<span>{item.title}</span></a
 								>
 							{/snippet}
