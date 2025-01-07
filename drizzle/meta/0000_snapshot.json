@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "31395488-4952-4a06-b265-daabcde48c22",
+  "id": "0e91c586-bcbb-4301-b666-a472b82e1d0f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "events": {
